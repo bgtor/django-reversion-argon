@@ -68,6 +68,12 @@ class Revision(models.Model):
         help_text="A text comment on this revision.",
     )
 
+    existing_versions = models.ManyToManyField("Version", blank=True,
+                                               verbose_name="existing_versions",
+                                               related_name='revision_multiple',
+        help_text="Previous versions that have not been changed since the last revision")
+
+
     def get_comment(self):
         try:
             LogEntry = apps.get_model('admin.LogEntry')
@@ -214,7 +220,8 @@ class Version(models.Model):
 
     revision = models.ForeignKey(
         Revision,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         help_text="The revision that contains this version.",
     )
 
